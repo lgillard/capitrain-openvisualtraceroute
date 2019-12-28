@@ -1,3 +1,8 @@
+fedora 31 binary
+```sudo -i
+cd /opt
+sh release-install-1.7.1.fedora.sh
+```
 # openvisualtraceroute
 Open source cross-platform (Windows/Linux/Mac) Java Visual Traceroute, packet sniffer and Whois. 
 
