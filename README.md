@@ -1,6 +1,7 @@
 fedora 31 binary
 ```sudo -i
 cd /opt
+git clone https://github.com/c4pt000/openvisualtraceroute
 sh release-install-1.7.1.fedora.sh
 ```
 # openvisualtraceroute
