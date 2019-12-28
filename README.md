@@ -6,6 +6,8 @@ sh release-install-1.7.1.fedora.sh
 ```
 /usr/share/OpenVisualTraceRoute/gksu_ovtr.sh
 
+
+defaults to Accessories> OpenVisualTraceroute
 <p align="center"><img src="https://github.com/c4pt000/openvisualtraceroute/raw/master/screenshot-ovtr.png" width="800"></p>
 
 # openvisualtraceroute
