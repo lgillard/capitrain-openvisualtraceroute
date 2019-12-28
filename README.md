@@ -16,6 +16,13 @@ defaults to Accessories> OpenVisualTraceroute
 check for traceroute for GUI functionality, of any ip to execute traceroute
 <p align="center"><img src="https://github.com/c4pt000/openvisualtraceroute-installer/blob/master/traceroute-to-show-functions.png" width="800"></p>
 
+<br>
+<br>
+<br>
+<br>
+
+most firewalls, require ping echo response through ICMP otherwise this gui traceroute wont work,
+
 # openvisualtraceroute
 Open source cross-platform (Windows/Linux/Mac) Java Visual Traceroute, packet sniffer and Whois. 
 
