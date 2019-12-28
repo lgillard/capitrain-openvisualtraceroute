@@ -5,7 +5,9 @@ git clone https://github.com/c4pt000/openvisualtraceroute
 sh release-install-1.7.1.fedora.sh
 ```
 
-https://github.com/c4pt000/openvisualtraceroute/raw/master/screenshot-ovtr.png
+
+<p align="center"><img src="https://github.com/c4pt000/openvisualtraceroute/raw/master/screenshot-ovtr.png" width="800"></p>
+
 # openvisualtraceroute
 Open source cross-platform (Windows/Linux/Mac) Java Visual Traceroute, packet sniffer and Whois. 
 
