@@ -78,6 +78,7 @@ public class Main {
 					LOGGER.warn("Failed to register CTRL+Q handler for MacOSX", e);
 				}
 			}
+			// TODO Instance du panneau qui s'affiche quand on lance l'appli. Lui passer la liste des machines à ping (récupérée via l'API ?)
 			_instance = new TraceRouteFrame();
 
 			final SplashScreen splash = new SplashScreen(_instance, !Env.INSTANCE.isHideSplashScreen(), Env.INSTANCE.getOs() != OS.mac ? 10 : 7);

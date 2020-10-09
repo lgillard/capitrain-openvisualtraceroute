@@ -648,6 +648,7 @@ public class ControlPanel extends AbstractPanel {
 			// top panel, start/cancel button and JTextField
 			_traceRouteButton = new JButton(GO_IMG);
 			_traceRouteButton.setToolTipText(Resources.getLabel("search.button"));
+			// TODO Input où l'ip de la machine est rentrée
 			_hostIpTextField = new JTextField(17);
 			_hostIpTextField.setText(Resources.getLabel("url.tooltip"));
 			_hostIpTextField.setCaretPosition(0);
@@ -656,6 +657,7 @@ public class ControlPanel extends AbstractPanel {
 			_hostIpTextField.addMouseListener(listener);
 			_hostIpTextField.addKeyListener(listener);
 			_hostIpTextField.setToolTipText(Resources.getLabel("url.tooltip"));
+			// TODO Bouton permettant de lancer la recherche
 			_resolveHostname = new JToggleButton(Resources.getImageIcon("host.png"), true);
 			_resolveHostname.setToolTipText(Resources.getLabel("resolve.hostname.tooltip"));
 

@@ -228,6 +228,7 @@ public class GeoService implements IComponent {
 					point.setLon(lon);
 				}
 				point.setCountryIso(location.getCountry().getIsoCode());
+				// TODO Raccrocher l'API ici
 				if (ip.equals("239.255.255.250")) {
 					point.setCountry("SSDP");
 					point.setTown("SSDP");

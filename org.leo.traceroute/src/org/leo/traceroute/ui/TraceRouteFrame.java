@@ -58,6 +58,7 @@ public class TraceRouteFrame extends JFrame {
 	 * Init the frame
 	 */
 	public void init(final ServiceFactory services) {
+		// TODO Panneau qui s'affiche quand on lance l'appli. Lui passer la liste des machines à ping (récupérée via l'API ?)
 		_mainPanel = new MainPanel(services);
 		getContentPane().add(_mainPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

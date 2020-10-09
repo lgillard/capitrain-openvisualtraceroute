@@ -116,6 +116,7 @@ public class MainPanel extends JPanel {
 		// init panels
 		_statusPanel = new StatusPanel(_services);
 		_replayPanel = new ReplayPanel(_services, _statusPanel);
+		// TODO Panel de la page, dans lequel sont contenus les boutons à utiliser automatiquement. C'est ici qu'il va falloir raccrocher l'API pour trouver toutes les machines à ping
 		_controlPanel = new ControlPanel(_services, this, _replayPanel, Env.INSTANCE.isIs3dMap(), Env.INSTANCE.getMode());
 
 		_split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
