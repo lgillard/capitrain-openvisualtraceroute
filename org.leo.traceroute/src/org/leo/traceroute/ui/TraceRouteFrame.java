@@ -20,6 +20,7 @@ package org.leo.traceroute.ui;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.HeadlessException;
+import java.util.Stack;
 
 import javax.swing.JFrame;
 
@@ -56,9 +57,9 @@ public class TraceRouteFrame extends JFrame {
 	/**
 	 * Init the frame
 	 */
-	public void init(final ServiceFactory services) {
+	public void init(final ServiceFactory services, final Stack<String> ips) {
 		// TODO Panneau qui s'affiche quand on lance l'appli. Lui passer la liste des machines à ping (récupérée via l'API ?)
-		_mainPanel = new MainPanel(services);
+		_mainPanel = new MainPanel(services, ips);
 		getContentPane().add(_mainPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
@@ -80,9 +81,5 @@ public class TraceRouteFrame extends JFrame {
 			_mainPanel.dispose();
 		}
 		LOGGER.info("Application exited.");
-	}
-
-	public MainPanel getMainPanel() {
-		return _mainPanel;
 	}
 }

@@ -17,6 +17,8 @@
  */
 package org.leo.traceroute;
 
+import java.util.Stack;
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -98,6 +100,26 @@ public class Main {
 
 			final ServiceFactory services = new ServiceFactory(splash);
 
+			// TODO Get all the IP we want to call traceroute to
+			// https://www.baeldung.com/java-http-request
+			final Stack<String> ips = new Stack<String>();
+			ips.add("185.50.131.178");
+			ips.add("193.54.76.53");
+			/*try {
+				final URL url = new URL("http://localhost:5000/list");
+				final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				connection.setRequestMethod("GET");
+				final BufferedReader response = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String inputLine;
+				System.out.println("###########");
+				while ((inputLine = response.readLine()) != null) {
+					ips.add(inputLine);
+				}
+				response.close();
+			} catch (final IOException e) {
+				e.printStackTrace();
+			}*/
+
 			new SwingWorker<Void, Void>() {
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -111,7 +133,7 @@ public class Main {
 					try {
 						get();
 						services.updateStartup("init.ui", true);
-						_instance.init(services);
+						_instance.init(services, ips);
 						_instance.setVisible(true);
 						LOGGER.info("Startup completed in {}ms", System.currentTimeMillis() - ts);
 					} catch (final Throwable e) {

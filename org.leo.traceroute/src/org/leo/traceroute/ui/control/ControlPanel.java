@@ -537,6 +537,8 @@ public class ControlPanel extends AbstractPanel {
 	private void taskEnded() {
 		setEnabled(true);
 		_running = false;
+		// TODO NOT WORKING
+		_mainPanel.fillTraceRoute();
 	}
 
 	public Mode getCurrentMode() {

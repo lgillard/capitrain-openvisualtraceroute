@@ -20,11 +20,7 @@ package org.leo.traceroute.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Stack;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -98,15 +94,19 @@ public class MainPanel extends JPanel {
 	private JSplitPane _rightSplit;
 	private JPanel _rightPanel;
 
+	/** List of the IP we want to traceroute to */
+	private final Stack<String> _ips;
+
 	/** Control panel */
 	private ControlPanel _controlPanel;
 
 	/**
 	 * Constructor
 	 */
-	public MainPanel(final ServiceFactory services) {
+	public MainPanel(final ServiceFactory services, final Stack<String> ips) {
 		super(new BorderLayout());
 		_services = services;
+		_ips = ips;
 		init();
 	}
 
@@ -321,28 +321,7 @@ public class MainPanel extends JPanel {
 				windowAncestor.toFront();
 				getRootPane().setDefaultButton(_controlPanel.getRootButton());
 
-				// Get all the IP we want to call traceroute to
-				// https://www.baeldung.com/java-http-request
-				try {
-					final URL url = new URL("http://localhost:5000/list");
-					final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-					connection.setRequestMethod("GET");
-					final BufferedReader response = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-					final String inputLine;
-					System.out.println("###########");
-					/*while ((inputLine = response.readLine()) != null) {
-						System.out.println("début " + inputLine);*/
-					_controlPanel.getTracerouteControls().getHostIpTextField().setText("www.google.com");
-					_controlPanel.getTracerouteControls().traceroute();
-					/*synchronized (_instance.getMainPanel()) {
-						System.out.println("fin " + inputLine);
-					}
-					}*/
-					response.close();
-				} catch (final IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				fillTraceRoute();
 			}
 
 		};
@@ -382,12 +361,24 @@ public class MainPanel extends JPanel {
 		Env.INSTANCE.saveConfig(_split, _rightSplit);
 	}
 
-	public JSplitPane getSplit() {
-		return _split;
+	/**
+	 * Fill traceroute search with the first element of the IP list. Removes the element from the list.
+	 */
+	public void fillTraceRoute() {
+		if (!_ips.isEmpty()) {
+			System.out.println("###############");
+			final String ip = _ips.pop();
+			System.out.println("Début " + ip);
+			_controlPanel.getTracerouteControls().getHostIpTextField().setText(ip);
+			System.out.println("IP SET");
+			_controlPanel.getTracerouteControls().getTraceRouteButton().doClick();
+			System.out.println("###############");
+			System.out.println("Fin " + ip);
+		}
 	}
 
-	public ControlPanel getControlPanel() {
-		return _controlPanel;
+	public JSplitPane getSplit() {
+		return _split;
 	}
 
 }
