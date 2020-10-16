@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Main-Class: org.leo.traceroute.Main
 Bundle-ManifestVersion: 2
 Bundle-Name: Open Visual TraceRoute
-Bundle-SymbolicName: org.leo.traceroute;singleton:=true
+Bundle-SymbolicName: Recherche-traceroute;singleton:=true
 Bundle-Version: 1.7.1
 Bundle-Vendor: Leo Lewis
 Bundle-Localization: plugin

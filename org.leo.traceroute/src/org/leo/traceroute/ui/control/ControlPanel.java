@@ -616,6 +616,10 @@ public class ControlPanel extends AbstractPanel {
 		}
 	}
 
+	public TraceRouteControl getTracerouteControls() {
+		return _tracerouteControls;
+	}
+
 	public class TraceRouteControl extends JPanel {
 
 		/**  */
@@ -752,6 +756,14 @@ public class ControlPanel extends AbstractPanel {
 			if (enable) {
 				_traceRouteButton.setEnabled(true);
 			}
+		}
+
+		public JTextField getHostIpTextField() {
+			return _hostIpTextField;
+		}
+
+		public JButton getTraceRouteButton() {
+			return _traceRouteButton;
 		}
 	}
 

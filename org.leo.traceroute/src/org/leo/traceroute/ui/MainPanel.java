@@ -20,6 +20,11 @@ package org.leo.traceroute.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -315,6 +320,29 @@ public class MainPanel extends JPanel {
 				SwingUtilities4.applyFont(windowAncestor, Env.INSTANCE.getFont());
 				windowAncestor.toFront();
 				getRootPane().setDefaultButton(_controlPanel.getRootButton());
+
+				// Get all the IP we want to call traceroute to
+				// https://www.baeldung.com/java-http-request
+				try {
+					final URL url = new URL("http://localhost:5000/list");
+					final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+					connection.setRequestMethod("GET");
+					final BufferedReader response = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+					final String inputLine;
+					System.out.println("###########");
+					/*while ((inputLine = response.readLine()) != null) {
+						System.out.println("début " + inputLine);*/
+					_controlPanel.getTracerouteControls().getHostIpTextField().setText("www.google.com");
+					_controlPanel.getTracerouteControls().traceroute();
+					/*synchronized (_instance.getMainPanel()) {
+						System.out.println("fin " + inputLine);
+					}
+					}*/
+					response.close();
+				} catch (final IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 		};
@@ -356,6 +384,10 @@ public class MainPanel extends JPanel {
 
 	public JSplitPane getSplit() {
 		return _split;
+	}
+
+	public ControlPanel getControlPanel() {
+		return _controlPanel;
 	}
 
 }

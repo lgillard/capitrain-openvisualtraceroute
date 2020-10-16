@@ -234,7 +234,9 @@ public class GeoService implements IComponent {
 					point.setTown("SSDP");
 				}
 			}
-		} catch (final Exception e) {
+		} catch (
+
+		final Exception e) {
 			LOGGER.warn("Failed to lookup geoip data for ip " + ip, e);
 		}
 		if (location == null) {

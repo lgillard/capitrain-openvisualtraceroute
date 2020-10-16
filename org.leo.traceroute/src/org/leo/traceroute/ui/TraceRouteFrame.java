@@ -46,7 +46,6 @@ public class TraceRouteFrame extends JFrame {
 
 	/**
 	 * Constructor
-	 *
 	 * @throws HeadlessException
 	 */
 	public TraceRouteFrame() throws HeadlessException {
@@ -81,5 +80,9 @@ public class TraceRouteFrame extends JFrame {
 			_mainPanel.dispose();
 		}
 		LOGGER.info("Application exited.");
+	}
+
+	public MainPanel getMainPanel() {
+		return _mainPanel;
 	}
 }
