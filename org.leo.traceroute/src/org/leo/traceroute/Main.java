@@ -103,8 +103,8 @@ public class Main {
 			// TODO Get all the IP we want to call traceroute to
 			// https://www.baeldung.com/java-http-request
 			final Stack<String> ips = new Stack<String>();
-			ips.add("185.50.131.178");
 			ips.add("193.54.76.53");
+			ips.add("185.50.131.178");
 			/*try {
 				final URL url = new URL("http://localhost:5000/list");
 				final HttpURLConnection connection = (HttpURLConnection) url.openConnection();

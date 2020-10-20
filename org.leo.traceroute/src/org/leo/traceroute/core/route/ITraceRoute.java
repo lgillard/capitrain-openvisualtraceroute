@@ -20,6 +20,7 @@ package org.leo.traceroute.core.route;
 import java.util.List;
 
 import org.leo.traceroute.core.IComponent;
+import org.leo.traceroute.ui.MainPanel;
 import org.leo.traceroute.ui.task.CancelMonitor;
 
 /**
@@ -43,7 +44,7 @@ public interface ITraceRoute extends IComponent {
 	 * @param maxHops max number of hops
 	 */
 	void compute(final String dest, final CancelMonitor monitor, final boolean resolveHostname, final long timeOutMs, final boolean useOsTraceroute,
-			final boolean useIpV4, final int maxHops);
+			final boolean useIpV4, final int maxHops, MainPanel mainPanel);
 
 	/**
 	 * The computed route

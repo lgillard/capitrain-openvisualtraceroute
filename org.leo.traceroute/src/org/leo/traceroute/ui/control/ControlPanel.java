@@ -537,8 +537,6 @@ public class ControlPanel extends AbstractPanel {
 	private void taskEnded() {
 		setEnabled(true);
 		_running = false;
-		// TODO NOT WORKING
-		_mainPanel.fillTraceRoute();
 	}
 
 	public Mode getCurrentMode() {
@@ -734,7 +732,7 @@ public class ControlPanel extends AbstractPanel {
 				_monitor.setCanceled(false);
 				_running = true;
 				_route.compute(_hostIpTextField.getText(), _monitor, _resolveHostname.isSelected(), 1000 * Integer.parseInt(_timeOut.getValue().toString()),
-						Env.INSTANCE.isUseOSTraceroute(), _ipV4.isSelected(), Env.INSTANCE.getTrMaxHop());
+						Env.INSTANCE.isUseOSTraceroute(), _ipV4.isSelected(), Env.INSTANCE.getTrMaxHop(), _mainPanel);
 			} else {
 				_monitor.setCanceled(true);
 				_traceRouteButton.setEnabled(false);

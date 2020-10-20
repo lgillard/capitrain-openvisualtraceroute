@@ -47,6 +47,7 @@ import org.leo.traceroute.core.route.RouteException;
 import org.leo.traceroute.core.route.RoutePoint;
 import org.leo.traceroute.install.Env;
 import org.leo.traceroute.install.Env.OS;
+import org.leo.traceroute.ui.MainPanel;
 import org.leo.traceroute.ui.route.RouteTablePanel.Column;
 import org.leo.traceroute.ui.task.CancelMonitor;
 import org.leo.traceroute.util.Util;
@@ -147,7 +148,7 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 	 */
 	@Override
 	public void compute(final String dest, final CancelMonitor monitor, final boolean resolveHostname, final long timeOutMs, final boolean useOsTraceroute,
-			final boolean ipV4, final int maxHops) {
+			final boolean ipV4, final int maxHops, final MainPanel mainPanel) {
 		try {
 			_semaphore.acquire();
 			_route.clear();
@@ -255,6 +256,7 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 					}
 				} finally {
 					_semaphore.release();
+					mainPanel.fillTraceRoute();
 				}
 			});
 		} catch (final Exception e) {
