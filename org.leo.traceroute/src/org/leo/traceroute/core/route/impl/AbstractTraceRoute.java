@@ -234,6 +234,7 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 						}
 					}
 					// if the traceroute didn't failed, add it to the history
+					// TODO fin de la route
 					_services.getAutocomplete().addToHistory(dest);
 					LOGGER.info("Traceroute to {} completed.", fdest);
 				} catch (final Exception e) {
@@ -316,7 +317,8 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 				int lineNum = 0;
 				boolean completed = false;
 				RoutePoint previous = null;
-				while (!completed && !monitor.isCanceled()) {
+				int nbEmptyLines = 0;
+				while (!completed && !monitor.isCanceled() && nbEmptyLines < 3) {
 					char c;
 					final StringBuilder linebuffer = new StringBuilder();
 					do {
@@ -359,8 +361,11 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 					if (line.contains("*")) {
 						if (previous != null) {
 							addPoint(previous.toUnkown());
+							nbEmptyLines++;
 						}
 						continue;
+					} else {
+						nbEmptyLines = 0;
 					}
 					final String[] routePoint = line.split(" ");
 					final String ip;
@@ -399,6 +404,11 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 				}
 				if (monitor.isCanceled()) {
 					return;
+				}
+				// Forces to stop if 3 IP are unknown
+				if (nbEmptyLines == 3) {
+					addPoint(Pair.of(previous.getIp(), destIp), previous.getLatency(), previous.getDnsLookUpTime());
+					LOGGER.info("Traceroute to {} aborted due to 3 unknown hosts", destIp);
 				}
 				final InputStream error = process.getErrorStream();
 
