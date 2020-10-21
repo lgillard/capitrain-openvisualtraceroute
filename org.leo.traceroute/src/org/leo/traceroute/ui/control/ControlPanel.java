@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -115,7 +116,7 @@ public class ControlPanel extends AbstractPanel {
 	private final MainPanel _mainPanel;
 	private Mode _mode;
 	private final JPanel _customControls;
-
+	private final Stack<String> _ips;
 	private final JToggleButton _tracerouteButton;
 	private final JToggleButton _snifferButton;
 	private final JToggleButton _whoisButton;
@@ -142,12 +143,14 @@ public class ControlPanel extends AbstractPanel {
 	 * @param route
 	 * @param networkInterfaceChooser
 	 * @param replayPanel
+	 * @param ips List of the IP we want to traceroute to
 	 */
-	public ControlPanel(final ServiceFactory services, final MainPanel mainPanel, final ReplayPanel replayPanel, final boolean is3d, final Mode mode) {
+	public ControlPanel(final ServiceFactory services, final MainPanel mainPanel, final ReplayPanel replayPanel, final boolean is3d, final Mode mode,
+			final Stack<String> ips) {
 		super(services);
 		_mainPanel = mainPanel;
 		setLayout(new WrapLayout(FlowLayout.LEFT, 5, 2));
-
+		_ips = ips;
 		_tracerouteButton = new JToggleButton(Resources.getLabel("mode.traceroute"), Resources.getImageIcon("route.png"));
 		_tracerouteButton.setToolTipText(Resources.getLabel("mode.traceroute.description"));
 		_tracerouteButton.setSelected(mode == Mode.TRACE_ROUTE);
@@ -652,7 +655,6 @@ public class ControlPanel extends AbstractPanel {
 			// top panel, start/cancel button and JTextField
 			_traceRouteButton = new JButton(GO_IMG);
 			_traceRouteButton.setToolTipText(Resources.getLabel("search.button"));
-			// TODO Input où l'ip de la machine est rentrée
 			_hostIpTextField = new JTextField(17);
 			_hostIpTextField.setText(Resources.getLabel("url.tooltip"));
 			_hostIpTextField.setCaretPosition(0);
@@ -661,7 +663,6 @@ public class ControlPanel extends AbstractPanel {
 			_hostIpTextField.addMouseListener(listener);
 			_hostIpTextField.addKeyListener(listener);
 			_hostIpTextField.setToolTipText(Resources.getLabel("url.tooltip"));
-			// TODO Bouton permettant de lancer la recherche
 			_resolveHostname = new JToggleButton(Resources.getImageIcon("host.png"), true);
 			_resolveHostname.setToolTipText(Resources.getLabel("resolve.hostname.tooltip"));
 
@@ -732,7 +733,7 @@ public class ControlPanel extends AbstractPanel {
 				_monitor.setCanceled(false);
 				_running = true;
 				_route.compute(_hostIpTextField.getText(), _monitor, _resolveHostname.isSelected(), 1000 * Integer.parseInt(_timeOut.getValue().toString()),
-						Env.INSTANCE.isUseOSTraceroute(), _ipV4.isSelected(), Env.INSTANCE.getTrMaxHop(), _mainPanel);
+						Env.INSTANCE.isUseOSTraceroute(), _ipV4.isSelected(), Env.INSTANCE.getTrMaxHop(), this);
 			} else {
 				_monitor.setCanceled(true);
 				_traceRouteButton.setEnabled(false);
@@ -758,12 +759,20 @@ public class ControlPanel extends AbstractPanel {
 			}
 		}
 
-		public JTextField getHostIpTextField() {
-			return _hostIpTextField;
-		}
-
-		public JButton getTraceRouteButton() {
-			return _traceRouteButton;
+		/**
+		 * Fill traceroute search with the first element of the IP list. Removes the element from the list.
+		 */
+		public void fillTraceRoute() {
+			if (!_ips.isEmpty()) {
+				System.out.println("###############");
+				final String ip = _ips.pop();
+				System.out.println("Début " + ip);
+				_hostIpTextField.setText(ip);
+				System.out.println("IP SET");
+				_traceRouteButton.doClick();
+				System.out.println("###############");
+				System.out.println("Fin " + ip);
+			}
 		}
 	}
 

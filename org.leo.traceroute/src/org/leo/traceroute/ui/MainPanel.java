@@ -94,9 +94,6 @@ public class MainPanel extends JPanel {
 	private JSplitPane _rightSplit;
 	private JPanel _rightPanel;
 
-	/** List of the IP we want to traceroute to */
-	private final Stack<String> _ips;
-
 	/** Control panel */
 	private ControlPanel _controlPanel;
 
@@ -106,14 +103,14 @@ public class MainPanel extends JPanel {
 	public MainPanel(final ServiceFactory services, final Stack<String> ips) {
 		super(new BorderLayout());
 		_services = services;
-		_ips = ips;
-		init();
+		init(ips);
 	}
 
 	/**
 	 * Init the component
+	 * @param ips List of the IP we want to traceroute to
 	 */
-	private void init() {
+	private void init(final Stack<String> ips) {
 		if (!Env.INSTANCE.isOpenGLAvailable()) {
 			LOGGER.warn("No graphic card that supports required OpenGL features has been detected. The 3D map will be not be available");
 		}
@@ -121,8 +118,7 @@ public class MainPanel extends JPanel {
 		// init panels
 		_statusPanel = new StatusPanel(_services);
 		_replayPanel = new ReplayPanel(_services, _statusPanel);
-		// TODO Panel de la page, dans lequel sont contenus les boutons à utiliser automatiquement. C'est ici qu'il va falloir raccrocher l'API pour trouver toutes les machines à ping
-		_controlPanel = new ControlPanel(_services, this, _replayPanel, Env.INSTANCE.isIs3dMap(), Env.INSTANCE.getMode());
+		_controlPanel = new ControlPanel(_services, this, _replayPanel, Env.INSTANCE.isIs3dMap(), Env.INSTANCE.getMode(), ips);
 
 		_split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		_rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -321,7 +317,7 @@ public class MainPanel extends JPanel {
 				windowAncestor.toFront();
 				getRootPane().setDefaultButton(_controlPanel.getRootButton());
 
-				fillTraceRoute();
+				_controlPanel.getTracerouteControls().fillTraceRoute();
 			}
 
 		};
@@ -359,23 +355,6 @@ public class MainPanel extends JPanel {
 			_services.dispose();
 		}
 		Env.INSTANCE.saveConfig(_split, _rightSplit);
-	}
-
-	/**
-	 * Fill traceroute search with the first element of the IP list. Removes the element from the list.
-	 */
-	// TODO DEPLACER LISTE IPs DANS CONTROLPANEL
-	public void fillTraceRoute() {
-		if (!_ips.isEmpty()) {
-			System.out.println("###############");
-			final String ip = _ips.pop();
-			System.out.println("Début " + ip);
-			_controlPanel.getTracerouteControls().getHostIpTextField().setText(ip);
-			System.out.println("IP SET");
-			_controlPanel.getTracerouteControls().getTraceRouteButton().doClick();
-			System.out.println("###############");
-			System.out.println("Fin " + ip);
-		}
 	}
 
 	public JSplitPane getSplit() {
