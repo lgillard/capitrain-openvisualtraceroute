@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.leo.traceroute.core.ServiceFactory;
@@ -35,6 +33,8 @@ import org.leo.traceroute.install.Env;
 import org.leo.traceroute.ui.task.CancelMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import junit.framework.TestCase;
 
 /**
  * RouteTest $Id: RouteTest.java 232 2016-01-30 04:39:16Z leolewis $
@@ -94,8 +94,8 @@ public class RouteTest extends TestCase {
 				if (nb == 1) {
 					assertEquals("192.168.0.1", point.getIp());
 				}
-				System.out.println(point.getNumber() + " " + point.getTown() + " " + point.getCountry() + " " + point.getIp()
-						+ " " + point.getHostname() + " " + point.getLatency() + "ms " + point.getDnsLookUpTime() + "ms");
+				System.out.println(point.getNumber() + " " + point.getTown() + " " + point.getCountry() + " " + point.getIp() + " " + point.getHostname() + " "
+						+ point.getLatency() + "ms " + point.getDnsLookUpTime() + "ms");
 				nb++;
 			}
 
@@ -116,10 +116,8 @@ public class RouteTest extends TestCase {
 			public void routeDone(final long tracerouteTime, final long lengthInKm) {
 				System.out.println("Route done in " + tracerouteTime + "ms");
 				assertEquals(nb, services.getTraceroute().getRoute().size() + 1);
-				if (!ip.get().equals(
-						services.getTraceroute().getRoute().get(services.getTraceroute().getRoute().size() - 1).getIp())) {
-					LOGGER.error("Wong final IP address {}, expected {}",
-							services.getTraceroute().getRoute().get(services.getTraceroute().getRoute().size() - 1).getIp(),
+				if (!ip.get().equals(services.getTraceroute().getRoute().get(services.getTraceroute().getRoute().size() - 1).getIp())) {
+					LOGGER.error("Wong final IP address {}, expected {}", services.getTraceroute().getRoute().get(services.getTraceroute().getRoute().size() - 1).getIp(),
 							ip.get());
 				}
 				cd.get().countDown();
@@ -152,7 +150,7 @@ public class RouteTest extends TestCase {
 			monitor.setCanceled(false);
 			cd.set(new CountDownLatch(1));
 			ip.set(InetAddress.getByName(d).getHostAddress());
-			services.getTraceroute().compute(d, monitor, true, 0, false, true, 50);
+			services.getTraceroute().compute(d, monitor, true, 0, false, true, 50, null);
 			cd.get().await();
 		}
 

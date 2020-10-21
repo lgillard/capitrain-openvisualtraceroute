@@ -93,8 +93,7 @@ public class UITest {
 	private static void display(final JPanel sub) {
 		final ServiceFactory services = new ServiceFactory(new AbstractTraceRoute() {
 			@Override
-			protected void computeRoute(final String formatedDest, final CancelMonitor monitor, final boolean resolveHostname,
-					final int maxHops) throws IOException {
+			protected void computeRoute(final String formatedDest, final CancelMonitor monitor, final boolean resolveHostname, final int maxHops) throws IOException {
 				for (int i = 0; i < 100; i++) {
 					addPoint(Pair.of("118.236.194.140", "localhost"), 10, 10);
 				}
@@ -144,7 +143,7 @@ public class UITest {
 		sub.add(table, BorderLayout.EAST);
 		sub.invalidate();
 		sub.revalidate();
-		services.getTraceroute().compute("test", new CancelMonitor(), false, 10000, false, true, 50);
+		services.getTraceroute().compute("test", new CancelMonitor(), false, 10000, false, true, 50, null);
 		sub.repaint();
 	}
 }

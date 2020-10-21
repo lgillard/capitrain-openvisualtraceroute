@@ -257,7 +257,9 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 					}
 				} finally {
 					_semaphore.release();
-					traceRouteControl.fillTraceRoute();
+					if (traceRouteControl != null) {
+						traceRouteControl.fillTraceRoute();
+					}
 				}
 			});
 		} catch (final Exception e) {
