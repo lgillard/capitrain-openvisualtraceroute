@@ -73,6 +73,7 @@ import org.leo.traceroute.core.route.RoutePoint;
 import org.leo.traceroute.core.sniffer.AbstractPacketPoint;
 import org.leo.traceroute.core.sniffer.AbstractPacketPoint.Protocol;
 import org.leo.traceroute.install.Env;
+import org.leo.traceroute.models.IpAdress;
 import org.leo.traceroute.resources.Resources;
 import org.leo.traceroute.ui.AbstractPanel;
 import org.leo.traceroute.ui.MainPanel;
@@ -116,7 +117,7 @@ public class ControlPanel extends AbstractPanel {
 	private final MainPanel _mainPanel;
 	private Mode _mode;
 	private final JPanel _customControls;
-	private final Stack<String> _ips;
+	private final Stack<IpAdress> _ips;
 	private final JToggleButton _tracerouteButton;
 	private final JToggleButton _snifferButton;
 	private final JToggleButton _whoisButton;
@@ -146,7 +147,7 @@ public class ControlPanel extends AbstractPanel {
 	 * @param ips List of the IP we want to traceroute to
 	 */
 	public ControlPanel(final ServiceFactory services, final MainPanel mainPanel, final ReplayPanel replayPanel, final boolean is3d, final Mode mode,
-			final Stack<String> ips) {
+			final Stack<IpAdress> ips) {
 		super(services);
 		_mainPanel = mainPanel;
 		setLayout(new WrapLayout(FlowLayout.LEFT, 5, 2));
@@ -764,14 +765,9 @@ public class ControlPanel extends AbstractPanel {
 		 */
 		public void fillTraceRoute() {
 			if (!_ips.isEmpty()) {
-				System.out.println("###############");
-				final String ip = _ips.pop();
-				System.out.println("Début " + ip);
+				final String ip = _ips.pop().getIp();
 				_hostIpTextField.setText(ip);
-				System.out.println("IP SET");
 				_traceRouteButton.doClick();
-				System.out.println("###############");
-				System.out.println("Fin " + ip);
 			}
 		}
 	}

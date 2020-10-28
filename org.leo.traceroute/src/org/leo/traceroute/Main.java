@@ -17,6 +17,10 @@
  */
 package org.leo.traceroute;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
@@ -24,15 +28,23 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.leo.traceroute.core.ServiceFactory;
 import org.leo.traceroute.install.Env;
 import org.leo.traceroute.install.Env.OS;
 import org.leo.traceroute.install.EnvException;
+import org.leo.traceroute.models.IpAdress;
 import org.leo.traceroute.resources.Resources;
 import org.leo.traceroute.ui.TraceRouteFrame;
 import org.leo.traceroute.ui.util.SplashScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Main $Id: Main.java 231 2016-01-27 08:24:31Z leolewis $
@@ -101,24 +113,19 @@ public class Main {
 			final ServiceFactory services = new ServiceFactory(splash);
 
 			// TODO Get all the IP we want to call traceroute to
-			// https://www.baeldung.com/java-http-request
-			final Stack<String> ips = new Stack<String>();
-			ips.add("193.54.76.53");
-			ips.add("185.50.131.178");
-			/*try {
-				final URL url = new URL("http://localhost:5000/list");
-				final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-				connection.setRequestMethod("GET");
-				final BufferedReader response = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-				String inputLine;
-				System.out.println("###########");
-				while ((inputLine = response.readLine()) != null) {
-					ips.add(inputLine);
-				}
-				response.close();
+			final Stack<IpAdress> ips = new Stack<IpAdress>();
+			try {
+				final HttpClient client = new DefaultHttpClient();
+				final HttpUriRequest request = new HttpGet("http://127.0.0.1:8000/api/ips");
+				final HttpResponse response = client.execute(request);
+				final BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+				final String result = reader.readLine();
+				final IpAdress[] ipArray = new ObjectMapper().readValue(result, IpAdress[].class);
+				ips.addAll(Arrays.asList(ipArray));
+				reader.close();
 			} catch (final IOException e) {
 				e.printStackTrace();
-			}*/
+			}
 
 			new SwingWorker<Void, Void>() {
 				@Override

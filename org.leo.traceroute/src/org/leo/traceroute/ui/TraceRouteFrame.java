@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 
 import org.leo.traceroute.core.ServiceFactory;
 import org.leo.traceroute.install.Env;
+import org.leo.traceroute.models.IpAdress;
 import org.leo.traceroute.resources.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,7 @@ public class TraceRouteFrame extends JFrame {
 	/**
 	 * Init the frame
 	 */
-	public void init(final ServiceFactory services, final Stack<String> ips) {
+	public void init(final ServiceFactory services, final Stack<IpAdress> ips) {
 		_mainPanel = new MainPanel(services, ips);
 		getContentPane().add(_mainPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

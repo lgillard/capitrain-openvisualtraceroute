@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="resources"/>
+	<classpathentry excluding="src/|test/|resources/" kind="src" path=""/>
 	<classpathentry kind="lib" path="lib/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="lib/jpcap.jar"/>
 	<classpathentry kind="lib" path="lib/worldwind.jar" sourcepath="/worldwind-daily-949.1849"/>

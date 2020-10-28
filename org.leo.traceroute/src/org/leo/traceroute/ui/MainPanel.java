@@ -32,6 +32,7 @@ import javax.swing.ToolTipManager;
 import org.apache.commons.io.IOUtils;
 import org.leo.traceroute.core.ServiceFactory;
 import org.leo.traceroute.install.Env;
+import org.leo.traceroute.models.IpAdress;
 import org.leo.traceroute.resources.Resources;
 import org.leo.traceroute.ui.control.ControlPanel;
 import org.leo.traceroute.ui.control.ControlPanel.Mode;
@@ -100,7 +101,7 @@ public class MainPanel extends JPanel {
 	/**
 	 * Constructor
 	 */
-	public MainPanel(final ServiceFactory services, final Stack<String> ips) {
+	public MainPanel(final ServiceFactory services, final Stack<IpAdress> ips) {
 		super(new BorderLayout());
 		_services = services;
 		init(ips);
@@ -110,7 +111,7 @@ public class MainPanel extends JPanel {
 	 * Init the component
 	 * @param ips List of the IP we want to traceroute to
 	 */
-	private void init(final Stack<String> ips) {
+	private void init(final Stack<IpAdress> ips) {
 		if (!Env.INSTANCE.isOpenGLAvailable()) {
 			LOGGER.warn("No graphic card that supports required OpenGL features has been detected. The 3D map will be not be available");
 		}
