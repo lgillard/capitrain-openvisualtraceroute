@@ -18,34 +18,41 @@
  */
 package org.leo.traceroute.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
 
 /**
- * IpAdress Represent an IP adress which will be used for traceroute (in database)
+ * Traceroute Represent a traceroute (in database)
  * <pre>
  * </pre>
  * @author Oceane
  */
-//https://www.baeldung.com/jackson-ignore-properties-on-serialization
-@JsonIgnoreProperties(value = { "packetPassages", "position" })
-public class IpAdress {
+// Filter sometimes used to ignore id field
+@JsonFilter("idFilter")
+public class Traceroute {
+
 	/**
 	 * Id in database
 	 */
 	private int id;
 
 	/**
-	 * True if the ip is meant to be shared, false if it was created during a traceroute call
+	 * When the traceroute started
 	 */
-	private boolean shared;
+	private Date date;
 
 	/**
-	 * Ip adress
+	 * List of the IP adresses the packet crossed
 	 */
-	private String ip;
+	private final List<PacketPassage> packetPassages;
 
-	public IpAdress() {
+	public Traceroute() {
 		super();
+		date = new Date();
+		packetPassages = new ArrayList<PacketPassage>();
 	}
 
 	public int getId() {
@@ -56,24 +63,15 @@ public class IpAdress {
 		this.id = id;
 	}
 
-	public boolean isShared() {
-		return shared;
+	public String getDate() {
+		return date.toString();
 	}
 
-	public void setIsShared(final boolean isShared) {
-		this.shared = isShared;
+	public void setDate(final Date date) {
+		this.date = date;
 	}
 
-	public String getIp() {
-		return ip;
-	}
-
-	public void setIp(final String ip) {
-		this.ip = ip;
-	}
-
-	@Override
-	public String toString() {
-		return ip + " (shared ? " + shared + ")";
+	public List<PacketPassage> getPacketPassages() {
+		return packetPassages;
 	}
 }

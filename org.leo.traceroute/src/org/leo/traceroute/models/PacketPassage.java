@@ -18,33 +18,20 @@
  */
 package org.leo.traceroute.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 /**
- * IpAdress Represent an IP adress which will be used for traceroute (in database)
+ * PacketPassage Represent a point where a packet passes during traceroute (in database)
  * <pre>
  * </pre>
  * @author Oceane
  */
-//https://www.baeldung.com/jackson-ignore-properties-on-serialization
-@JsonIgnoreProperties(value = { "packetPassages", "position" })
-public class IpAdress {
-	/**
-	 * Id in database
-	 */
+public class PacketPassage {
 	private int id;
-
-	/**
-	 * True if the ip is meant to be shared, false if it was created during a traceroute call
-	 */
-	private boolean shared;
-
-	/**
-	 * Ip adress
-	 */
+	private int indice;
 	private String ip;
 
-	public IpAdress() {
+	private Traceroute traceroute;
+
+	public PacketPassage() {
 		super();
 	}
 
@@ -56,12 +43,12 @@ public class IpAdress {
 		this.id = id;
 	}
 
-	public boolean isShared() {
-		return shared;
+	public int getIndice() {
+		return indice;
 	}
 
-	public void setIsShared(final boolean isShared) {
-		this.shared = isShared;
+	public void setIndice(final int indice) {
+		this.indice = indice;
 	}
 
 	public String getIp() {
@@ -72,8 +59,11 @@ public class IpAdress {
 		this.ip = ip;
 	}
 
-	@Override
-	public String toString() {
-		return ip + " (shared ? " + shared + ")";
+	public Traceroute getTraceroute() {
+		return traceroute;
+	}
+
+	public void setTraceroute(final Traceroute traceroute) {
+		this.traceroute = traceroute;
 	}
 }
