@@ -39,7 +39,7 @@ public class PacketPassage {
 	/**
 	 * Id of the traceroute the packet is linked to
 	 */
-	private int idTraceroute;
+	private int traceroute;
 
 	/**
 	 * Localization of the IP
@@ -50,27 +50,27 @@ public class PacketPassage {
 		super();
 	}
 
-	public PacketPassage(final int indice, final String ip, final int idTraceroute) {
+	public PacketPassage(final int indice, final String ip, final int traceroute) {
 		super();
 		this.indice = indice;
 		this.ip = ip;
-		this.idTraceroute = idTraceroute;
+		this.traceroute = traceroute;
 	}
 
-	public PacketPassage(final int indice, final String ip, final int idTraceroute, final Position position) {
+	public PacketPassage(final int indice, final String ip, final int traceroute, final Position position) {
 		super();
 		this.indice = indice;
 		this.ip = ip;
-		this.idTraceroute = idTraceroute;
+		this.traceroute = traceroute;
 		this.position = position;
 	}
 
-	public int getIdTraceroute() {
-		return idTraceroute;
+	public int getTraceroute() {
+		return traceroute;
 	}
 
-	public void setIdTraceroute(final int idTraceroute) {
-		this.idTraceroute = idTraceroute;
+	public void setTraceroute(final int traceroute) {
+		this.traceroute = traceroute;
 	}
 
 	public int getIndice() {

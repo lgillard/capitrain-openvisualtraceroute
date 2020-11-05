@@ -17,8 +17,10 @@
  */
 package org.leo.traceroute.core.route.impl;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
@@ -37,6 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -103,9 +106,6 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 	/** Services factory */
 	protected ServiceFactory _services;
 
-	/** HttpClient to send traceroute to save it in database*/
-	protected HttpClient _client = new DefaultHttpClient();
-
 	/** Traceroute object used*/
 	protected Traceroute _traceroute;
 
@@ -150,7 +150,6 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 	 */
 	protected AbstractTraceRoute() {
 		super();
-		_client = new DefaultHttpClient();
 	}
 
 	/**
@@ -340,26 +339,22 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 			final Process process = Runtime.getRuntime().exec(cmd + " " + formatedDest);
 			try {
 				try {
+					final HttpClient _client = new DefaultHttpClient();
 					final HttpPost request = new HttpPost("http://127.0.0.1:8000/api/traceroutes");
 					request.setHeader("Accept", "application/json");
 					request.setHeader("Content-type", "application/json");
-					System.out.println("TRACEROUTE");
 					final ObjectMapper mapper = new ObjectMapper();
 					_traceroute = new Traceroute();
 					final FilterProvider filterId = new SimpleFilterProvider().addFilter("idFilter", SimpleBeanPropertyFilter.serializeAllExcept("id"));
-					System.out.println(mapper.writer(filterId).writeValueAsString(_traceroute));
 					request.setEntity(new StringEntity(mapper.writer(filterId).writeValueAsString(_traceroute)));
-					System.out.println("set entity");
-					_client.execute(request);
-					System.out.println("request");
+					final HttpResponse response = _client.execute(request);
+					final BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+					final String result = reader.readLine();
+					_traceroute.setId(new ObjectMapper().readValue(result, Traceroute.class).getId());
+					reader.close();
 				} catch (final ClientProtocolException e) {
-					System.out.println("ERREUR 1");
-					System.out.println(e.getMessage());
 					e.printStackTrace();
 				} catch (final IOException e) {
-					System.out.println("ERREUR 2");
-					System.out.println(e.getLocalizedMessage());
-					System.out.println(e.getCause());
 					e.printStackTrace();
 				}
 				final InputStream input = process.getInputStream();
@@ -549,16 +544,14 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 	}
 
 	protected RoutePoint addPoint(final RoutePoint point) {
-		System.out.println("#########ADD POINT############");
 		if (!_route.isEmpty()) {
 			final RoutePoint previousPoint = _route.get(_route.size() - 1);
 			final int distance = Util.distance(point, previousPoint);
 			point.setDistanceToPrevious(distance);
 			_lengthInKm.addAndGet(distance);
-			System.out.println("empty");
 
 		}
-		// Save point in API TODO
+		// Save point in API
 		if (_traceroute != null) {
 			try {
 				Position position = null;
@@ -568,11 +561,13 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 				}
 				// If the IP is unknown, we do not send it to the API
 				if (!point.getIp().equals(GeoPoint.UNKNOWN)) {
-					final PacketPassage packetPassage = new PacketPassage(_route.size(), point.getIp(), _traceroute.getId(), position);
-					final ObjectMapper mapper = new ObjectMapper();
-					final HttpPost request = new HttpPost("http://127.0.0.1:8000/api/packet_passages");
+					//"http://localhost:8000/api/packet_passages"
+					final HttpClient _client = new DefaultHttpClient();
+					final HttpPost request = new HttpPost("http://localhost:8000/api/packet_passages");
 					request.setHeader("Accept", "application/json");
 					request.setHeader("Content-type", "application/json");
+					final PacketPassage packetPassage = new PacketPassage(_route.size(), point.getIp(), _traceroute.getId(), position);
+					final ObjectMapper mapper = new ObjectMapper();
 					request.setEntity(new StringEntity(mapper.writeValueAsString(packetPassage)));
 					_client.execute(request);
 				}
@@ -586,8 +581,6 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 				e.printStackTrace();
 			}
 		}
-
-		System.out.println("################FIN ADD POINT############");
 		_route.add(point);
 		_notifyQueue.offer(point);
 		return point;
