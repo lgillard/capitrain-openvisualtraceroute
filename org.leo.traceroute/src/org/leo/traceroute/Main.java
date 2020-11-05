@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -121,9 +122,11 @@ public class Main {
 				final BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 				final String result = reader.readLine();
 				final IpAdress[] ipArray = new ObjectMapper().readValue(result, IpAdress[].class);
-				ips.addAll(Arrays.asList(ipArray));
+				ips.addAll(Arrays.asList(ipArray).stream().filter(ip -> ip.isShared()).collect(Collectors.toList()));
 				reader.close();
 			} catch (final IOException e) {
+				e.printStackTrace();
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 
