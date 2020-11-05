@@ -17,10 +17,8 @@
  */
 package org.leo.traceroute.core.route.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -99,6 +97,12 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 	/** Services factory */
 	protected ServiceFactory _services;
 
+	/** HttpClient to send traceroute to save it in database*/
+	protected HttpClient _client = new DefaultHttpClient();
+
+	/** Traceroute object used*/
+	protected Traceroute _traceroute;
+
 	private final Semaphore _semaphore = new Semaphore(1);
 
 	private final BlockingQueue<RoutePoint> _notifyQueue = new LinkedBlockingQueue<>();
@@ -140,6 +144,7 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 	 */
 	protected AbstractTraceRoute() {
 		super();
+		_client = new DefaultHttpClient();
 	}
 
 	/**
@@ -329,24 +334,20 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 			final Process process = Runtime.getRuntime().exec(cmd + " " + formatedDest);
 			try {
 				//TODO Envoi des données à l'API, TO CONTINUE
-				final HttpClient client = new DefaultHttpClient();
-				final HttpPost request = new HttpPost("http://127.0.0.1:8000/api/traceroutes");
-				request.setHeader("Accept", "application/json");
-				request.setHeader("Content-type", "application/json");
-				final ObjectMapper mapper = new ObjectMapper();
-				final Traceroute traceroute = new Traceroute();
-				final FilterProvider filterId = new SimpleFilterProvider().addFilter("idFilter", SimpleBeanPropertyFilter.serializeAllExcept("id"));
-				request.setEntity(new StringEntity(mapper.writer(filterId).writeValueAsString(traceroute)));
-
-				final HttpResponse response = client.execute(request);
-				final BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-				String s;
-				System.out.println("#########ADD TRACEROUTE########");
-				while ((s = reader.readLine()) != null) {
-					System.out.println(s);
+				try {
+					final HttpPost request = new HttpPost("http://127.0.0.1:8000/api/traceroutes");
+					request.setHeader("Accept", "application/json");
+					request.setHeader("Content-type", "application/json");
+					final ObjectMapper mapper = new ObjectMapper();
+					_traceroute = new Traceroute();
+					final FilterProvider filterId = new SimpleFilterProvider().addFilter("idFilter", SimpleBeanPropertyFilter.serializeAllExcept("id"));
+					request.setEntity(new StringEntity(mapper.writer(filterId).writeValueAsString(_traceroute)));
+					_client.execute(request);
+				} catch (final ClientProtocolException e) {
+					e.printStackTrace();
+				} catch (final IOException e) {
+					e.printStackTrace();
 				}
-				System.out.println("#########END TRACEROUTE########");
-
 				final InputStream input = process.getInputStream();
 				final int ignoreLines = Env.INSTANCE.getOs() == OS.win ? 4 : (Env.INSTANCE.getOs() == OS.mac ? 0 : 1);
 				// check if the host exists
