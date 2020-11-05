@@ -19,8 +19,10 @@ package org.leo.traceroute.core.route.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -43,6 +45,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.leo.traceroute.core.AbstractObject;
 import org.leo.traceroute.core.ServiceFactory;
+import org.leo.traceroute.core.geo.GeoPoint;
+import org.leo.traceroute.core.geo.GeoService;
 import org.leo.traceroute.core.network.DNSLookupService;
 import org.leo.traceroute.core.network.INetworkInterfaceListener;
 import org.leo.traceroute.core.route.IRouteListener;
@@ -52,6 +56,8 @@ import org.leo.traceroute.core.route.RouteException;
 import org.leo.traceroute.core.route.RoutePoint;
 import org.leo.traceroute.install.Env;
 import org.leo.traceroute.install.Env.OS;
+import org.leo.traceroute.models.PacketPassage;
+import org.leo.traceroute.models.Position;
 import org.leo.traceroute.models.Traceroute;
 import org.leo.traceroute.ui.control.ControlPanel.TraceRouteControl;
 import org.leo.traceroute.ui.route.RouteTablePanel.Column;
@@ -60,6 +66,7 @@ import org.leo.traceroute.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -99,6 +106,10 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 
 	/** HttpClient to send traceroute to save it in database*/
 	protected HttpClient _client = new DefaultHttpClient();
+
+	/** Object used to post a request */
+
+	protected HttpPost _request;
 
 	/** Traceroute object used*/
 	protected Traceroute _traceroute;
@@ -145,6 +156,9 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 	protected AbstractTraceRoute() {
 		super();
 		_client = new DefaultHttpClient();
+		_request = new HttpPost();
+		_request.setHeader("Accept", "application/json");
+		_request.setHeader("Content-type", "application/json");
 	}
 
 	/**
@@ -333,16 +347,14 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 			}
 			final Process process = Runtime.getRuntime().exec(cmd + " " + formatedDest);
 			try {
-				//TODO Envoi des données à l'API, TO CONTINUE
 				try {
-					final HttpPost request = new HttpPost("http://127.0.0.1:8000/api/traceroutes");
-					request.setHeader("Accept", "application/json");
-					request.setHeader("Content-type", "application/json");
+					_request.setURI(new URI("http://127.0.0.1:8000/api/traceroutes"));
 					final ObjectMapper mapper = new ObjectMapper();
 					_traceroute = new Traceroute();
 					final FilterProvider filterId = new SimpleFilterProvider().addFilter("idFilter", SimpleBeanPropertyFilter.serializeAllExcept("id"));
-					request.setEntity(new StringEntity(mapper.writer(filterId).writeValueAsString(_traceroute)));
-					_client.execute(request);
+					_request.setEntity(new StringEntity(mapper.writer(filterId).writeValueAsString(_traceroute)));
+					_client.execute(_request);
+					_request.setURI(new URI("https://127.0.0.1:8000/api/packet_passages"));
 				} catch (final ClientProtocolException e) {
 					e.printStackTrace();
 				} catch (final IOException e) {
@@ -396,7 +408,7 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 					if (monitor.isCanceled()) {
 						break;
 					}
-					if (line.contains("*")) {
+					if (line.contains(GeoPoint.UNKNOWN)) {
 						if (previous != null) {
 							addPoint(previous.toUnkown());
 							nbEmptyLines++;
@@ -535,12 +547,42 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 	}
 
 	protected RoutePoint addPoint(final RoutePoint point) {
+		System.out.println("#########ADD POINT############");
 		if (!_route.isEmpty()) {
 			final RoutePoint previousPoint = _route.get(_route.size() - 1);
 			final int distance = Util.distance(point, previousPoint);
 			point.setDistanceToPrevious(distance);
 			_lengthInKm.addAndGet(distance);
+			System.out.println("empty");
+
 		}
+		// Save point in API TODO
+		if (_traceroute != null) {
+			try {
+				Position position = null;
+				// Case when the IP's localization is known
+				if (!point.getTown().equals(GeoService.UNKNOWN_LOCATION) && !point.getTown().equals(GeoPoint.UNKNOWN)) {
+					position = new Position(point.getLon(), point.getLat(), point.getCountry(), point.getTown());
+				}
+				// If the IP is unknown, we do not send it to the API
+				if (!point.getIp().equals(GeoPoint.UNKNOWN)) {
+					final PacketPassage packetPassage = new PacketPassage(_route.size(), point.getIp(), _traceroute.getId(), position);
+					final ObjectMapper mapper = new ObjectMapper();
+					_request.setEntity(new StringEntity(mapper.writeValueAsString(packetPassage)));
+					_client.execute(_request);
+				}
+			} catch (final UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (final JsonProcessingException e) {
+				e.printStackTrace();
+			} catch (final ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (final IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println("################FIN ADD POINT############");
 		_route.add(point);
 		_notifyQueue.offer(point);
 		return point;

@@ -64,7 +64,7 @@ public class GeoService implements IComponent {
 	private final static File LOC_RECORDS = new File(Env.OVTR_FOLDER.getAbsolutePath() + "/dns.loc");
 
 	/** Unknown location */
-	private final static String UNKNOWN_LOCATION = "(Unknown)";
+	public final static String UNKNOWN_LOCATION = "(Unknown)";
 
 	/** City lookup service */
 	protected DatabaseReader _lookupService;

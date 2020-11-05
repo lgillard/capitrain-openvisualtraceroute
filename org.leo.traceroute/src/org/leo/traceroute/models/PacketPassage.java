@@ -25,22 +25,52 @@ package org.leo.traceroute.models;
  * @author Oceane
  */
 public class PacketPassage {
-	private int id;
+
+	/**
+	 * Rank of the packet in the traceroute path
+	 */
 	private int indice;
+
+	/**
+	 * IP of the packet
+	 */
 	private String ip;
 
-	private Traceroute traceroute;
+	/**
+	 * Id of the traceroute the packet is linked to
+	 */
+	private int idTraceroute;
+
+	/**
+	 * Localization of the IP
+	 */
+	private Position position;
 
 	public PacketPassage() {
 		super();
 	}
 
-	public int getId() {
-		return id;
+	public PacketPassage(final int indice, final String ip, final int idTraceroute) {
+		super();
+		this.indice = indice;
+		this.ip = ip;
+		this.idTraceroute = idTraceroute;
 	}
 
-	public void setId(final int id) {
-		this.id = id;
+	public PacketPassage(final int indice, final String ip, final int idTraceroute, final Position position) {
+		super();
+		this.indice = indice;
+		this.ip = ip;
+		this.idTraceroute = idTraceroute;
+		this.position = position;
+	}
+
+	public int getIdTraceroute() {
+		return idTraceroute;
+	}
+
+	public void setIdTraceroute(final int idTraceroute) {
+		this.idTraceroute = idTraceroute;
 	}
 
 	public int getIndice() {
@@ -59,11 +89,11 @@ public class PacketPassage {
 		this.ip = ip;
 	}
 
-	public Traceroute getTraceroute() {
-		return traceroute;
+	public Position getPosition() {
+		return position;
 	}
 
-	public void setTraceroute(final Traceroute traceroute) {
-		this.traceroute = traceroute;
+	public void setPosition(final Position position) {
+		this.position = position;
 	}
 }
