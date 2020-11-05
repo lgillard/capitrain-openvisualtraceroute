@@ -259,7 +259,6 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 						}
 					}
 					// if the traceroute didn't failed, add it to the history
-					// TODO fin de la route
 					_services.getAutocomplete().addToHistory(dest);
 					LOGGER.info("Traceroute to {} completed.", fdest);
 				} catch (final Exception e) {

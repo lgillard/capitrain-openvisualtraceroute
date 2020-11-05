@@ -113,7 +113,6 @@ public class Main {
 
 			final ServiceFactory services = new ServiceFactory(splash);
 
-			// TODO Get all the IP we want to call traceroute to
 			final Stack<IpAdress> ips = new Stack<IpAdress>();
 			try {
 				final HttpClient client = new DefaultHttpClient();
