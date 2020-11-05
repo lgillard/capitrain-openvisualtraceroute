@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -107,10 +106,6 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 	/** HttpClient to send traceroute to save it in database*/
 	protected HttpClient _client = new DefaultHttpClient();
 
-	/** Object used to post a request */
-
-	protected HttpPost _request;
-
 	/** Traceroute object used*/
 	protected Traceroute _traceroute;
 
@@ -156,9 +151,6 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 	protected AbstractTraceRoute() {
 		super();
 		_client = new DefaultHttpClient();
-		_request = new HttpPost();
-		_request.setHeader("Accept", "application/json");
-		_request.setHeader("Content-type", "application/json");
 	}
 
 	/**
@@ -348,16 +340,26 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 			final Process process = Runtime.getRuntime().exec(cmd + " " + formatedDest);
 			try {
 				try {
-					_request.setURI(new URI("http://127.0.0.1:8000/api/traceroutes"));
+					final HttpPost request = new HttpPost("http://127.0.0.1:8000/api/traceroutes");
+					request.setHeader("Accept", "application/json");
+					request.setHeader("Content-type", "application/json");
+					System.out.println("TRACEROUTE");
 					final ObjectMapper mapper = new ObjectMapper();
 					_traceroute = new Traceroute();
 					final FilterProvider filterId = new SimpleFilterProvider().addFilter("idFilter", SimpleBeanPropertyFilter.serializeAllExcept("id"));
-					_request.setEntity(new StringEntity(mapper.writer(filterId).writeValueAsString(_traceroute)));
-					_client.execute(_request);
-					_request.setURI(new URI("https://127.0.0.1:8000/api/packet_passages"));
+					System.out.println(mapper.writer(filterId).writeValueAsString(_traceroute));
+					request.setEntity(new StringEntity(mapper.writer(filterId).writeValueAsString(_traceroute)));
+					System.out.println("set entity");
+					_client.execute(request);
+					System.out.println("request");
 				} catch (final ClientProtocolException e) {
+					System.out.println("ERREUR 1");
+					System.out.println(e.getMessage());
 					e.printStackTrace();
 				} catch (final IOException e) {
+					System.out.println("ERREUR 2");
+					System.out.println(e.getLocalizedMessage());
+					System.out.println(e.getCause());
 					e.printStackTrace();
 				}
 				final InputStream input = process.getInputStream();
@@ -568,8 +570,11 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 				if (!point.getIp().equals(GeoPoint.UNKNOWN)) {
 					final PacketPassage packetPassage = new PacketPassage(_route.size(), point.getIp(), _traceroute.getId(), position);
 					final ObjectMapper mapper = new ObjectMapper();
-					_request.setEntity(new StringEntity(mapper.writeValueAsString(packetPassage)));
-					_client.execute(_request);
+					final HttpPost request = new HttpPost("http://127.0.0.1:8000/api/packet_passages");
+					request.setHeader("Accept", "application/json");
+					request.setHeader("Content-type", "application/json");
+					request.setEntity(new StringEntity(mapper.writeValueAsString(packetPassage)));
+					_client.execute(request);
 				}
 			} catch (final UnsupportedEncodingException e) {
 				e.printStackTrace();
