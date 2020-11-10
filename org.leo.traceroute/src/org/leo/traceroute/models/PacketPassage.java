@@ -42,6 +42,11 @@ public class PacketPassage {
 	private int traceroute;
 
 	/**
+	 * Name of the IP location, it should something like "Orange", "Free", "SFR"... But it is not always.
+	 */
+	private String isp;
+
+	/**
 	 * Localization of the IP
 	 */
 	private Position position;
@@ -50,18 +55,20 @@ public class PacketPassage {
 		super();
 	}
 
-	public PacketPassage(final int indice, final String ip, final int traceroute) {
+	public PacketPassage(final int indice, final String ip, final int traceroute, final String isp) {
 		super();
 		this.indice = indice;
 		this.ip = ip;
 		this.traceroute = traceroute;
+		this.isp = isp;
 	}
 
-	public PacketPassage(final int indice, final String ip, final int traceroute, final Position position) {
+	public PacketPassage(final int indice, final String ip, final int traceroute, final String isp, final Position position) {
 		super();
 		this.indice = indice;
 		this.ip = ip;
 		this.traceroute = traceroute;
+		this.isp = isp;
 		this.position = position;
 	}
 
@@ -87,6 +94,14 @@ public class PacketPassage {
 
 	public void setIp(final String ip) {
 		this.ip = ip;
+	}
+
+	public String getIsp() {
+		return isp;
+	}
+
+	public void setIsp(final String isp) {
+		this.isp = isp;
 	}
 
 	public Position getPosition() {

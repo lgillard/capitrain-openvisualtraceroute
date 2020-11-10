@@ -565,7 +565,7 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 					final HttpPost request = new HttpPost("http://localhost:8000/api/packet_passages");
 					request.setHeader("Accept", "application/json");
 					request.setHeader("Content-type", "application/json");
-					final PacketPassage packetPassage = new PacketPassage(_route.size(), point.getIp(), _traceroute.getId(), position);
+					final PacketPassage packetPassage = new PacketPassage(_route.size(), point.getIp(), _traceroute.getId(), point.getHostname(), position);
 					final ObjectMapper mapper = new ObjectMapper();
 					request.setEntity(new StringEntity(mapper.writeValueAsString(packetPassage)));
 					_client.execute(request);
