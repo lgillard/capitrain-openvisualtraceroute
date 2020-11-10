@@ -339,7 +339,7 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 			try {
 				try {
 					final HttpClient _client = new DefaultHttpClient();
-					final HttpPost request = new HttpPost("http://127.0.0.1:8000/api/traceroutes");
+					final HttpPost request = new HttpPost(Env.INSTANCE.getApiUrl() + "/traceroutes");
 					request.setHeader("Accept", "application/json");
 					request.setHeader("Content-type", "application/json");
 					final ObjectMapper mapper = new ObjectMapper();
@@ -560,9 +560,8 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 				}
 				// If the IP is unknown, we do not send it to the API
 				if (!point.getIp().equals(GeoPoint.UNKNOWN)) {
-					//"http://localhost:8000/api/packet_passages"
 					final HttpClient _client = new DefaultHttpClient();
-					final HttpPost request = new HttpPost("http://localhost:8000/api/packet_passages");
+					final HttpPost request = new HttpPost(Env.INSTANCE.getApiUrl() + "/packet_passages");
 					request.setHeader("Accept", "application/json");
 					request.setHeader("Content-type", "application/json");
 					final PacketPassage packetPassage = new PacketPassage(_route.size(), point.getIp(), _traceroute.getId(), point.getHostname(), position);

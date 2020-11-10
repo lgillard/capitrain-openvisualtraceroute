@@ -113,22 +113,6 @@ public class Main {
 
 			final ServiceFactory services = new ServiceFactory(splash);
 
-			final Stack<IpAdress> ips = new Stack<IpAdress>();
-			try {
-				final HttpClient client = new DefaultHttpClient();
-				final HttpUriRequest request = new HttpGet("http://127.0.0.1:8000/api/ips");
-				final HttpResponse response = client.execute(request);
-				final BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-				final String result = reader.readLine();
-				final IpAdress[] ipArray = new ObjectMapper().readValue(result, IpAdress[].class);
-				ips.addAll(Arrays.asList(ipArray).stream().filter(ip -> ip.isShared()).collect(Collectors.toList()));
-				reader.close();
-			} catch (final IOException e) {
-				e.printStackTrace();
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-
 			new SwingWorker<Void, Void>() {
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -142,6 +126,23 @@ public class Main {
 					try {
 						get();
 						services.updateStartup("init.ui", true);
+
+						final Stack<IpAdress> ips = new Stack<IpAdress>();
+						try {
+							final HttpClient client = new DefaultHttpClient();
+							final HttpUriRequest request = new HttpGet(Env.INSTANCE.getApiUrl() + "/ips");
+							final HttpResponse response = client.execute(request);
+							final BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+							final String result = reader.readLine();
+							final IpAdress[] ipArray = new ObjectMapper().readValue(result, IpAdress[].class);
+							ips.addAll(Arrays.asList(ipArray).stream().filter(ip -> ip.isShared()).collect(Collectors.toList()));
+							System.out.println(ips);
+							reader.close();
+						} catch (final IOException e) {
+							LOGGER.error(e.getMessage());
+						} catch (final Exception e) {
+							LOGGER.error(e.getMessage());
+						}
 						_instance.init(services, ips);
 						_instance.setVisible(true);
 						LOGGER.info("Startup completed in {}ms", System.currentTimeMillis() - ts);

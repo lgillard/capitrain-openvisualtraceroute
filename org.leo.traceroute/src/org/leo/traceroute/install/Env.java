@@ -226,6 +226,7 @@ public enum Env {
 	private static final String FONT_NAME = "font.name";
 	private static final String FONT_SIZE = "font.size";
 	private static final String FONT_STYLE = "font.style";
+	private static final String API_ADRESS = "api.url";
 
 	/** App config  */
 	private final Properties _conf = new Properties();
@@ -268,6 +269,7 @@ public enum Env {
 	private int _trMaxHop;
 	private boolean _mapShowLabel;
 	private Font _font;
+	private String _apiUrl;
 
 	// dynamic conf
 	private String[] _ipResolvers;
@@ -907,6 +909,7 @@ public enum Env {
 			_supportUrl = prop.getProperty("support.url");
 			_websitetUrl = prop.getProperty("website.url");
 			_facebookUrl = prop.getProperty("facebook.url");
+			_apiUrl = prop.getProperty(API_ADRESS);
 		} catch (final Exception e) {
 			LOGGER.error("Failed to download dynamic config. Fallback to default", e);
 		} finally {
@@ -938,6 +941,9 @@ public enum Env {
 		}
 		if (_facebookUrl == null) {
 			_facebookUrl = Resources.getStatic("facebook.url");
+		}
+		if (_apiUrl == null) {
+			_apiUrl = Resources.getStatic(API_ADRESS);
 		}
 	}
 
@@ -1084,6 +1090,14 @@ public enum Env {
 	 */
 	public Font getFont() {
 		return _font;
+	}
+
+	/**
+	 * Return the value of the field api.adress
+	 * @return the value of the API adress
+	 */
+	public String getApiUrl() {
+		return _apiUrl;
 	}
 
 	/**
