@@ -46,11 +46,6 @@ public class PacketPassage {
 	 */
 	private String isp;
 
-	/**
-	 * Localization of the IP
-	 */
-	private Position position;
-
 	public PacketPassage() {
 		super();
 	}
@@ -61,15 +56,6 @@ public class PacketPassage {
 		this.ip = ip;
 		this.traceroute = traceroute;
 		this.isp = isp;
-	}
-
-	public PacketPassage(final int indice, final String ip, final int traceroute, final String isp, final Position position) {
-		super();
-		this.indice = indice;
-		this.ip = ip;
-		this.traceroute = traceroute;
-		this.isp = isp;
-		this.position = position;
 	}
 
 	public int getTraceroute() {
@@ -102,13 +88,5 @@ public class PacketPassage {
 
 	public void setIsp(final String isp) {
 		this.isp = isp;
-	}
-
-	public Position getPosition() {
-		return position;
-	}
-
-	public void setPosition(final Position position) {
-		this.position = position;
 	}
 }

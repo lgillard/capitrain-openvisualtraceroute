@@ -48,7 +48,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.leo.traceroute.core.AbstractObject;
 import org.leo.traceroute.core.ServiceFactory;
 import org.leo.traceroute.core.geo.GeoPoint;
-import org.leo.traceroute.core.geo.GeoService;
 import org.leo.traceroute.core.network.DNSLookupService;
 import org.leo.traceroute.core.network.INetworkInterfaceListener;
 import org.leo.traceroute.core.route.IRouteListener;
@@ -59,7 +58,6 @@ import org.leo.traceroute.core.route.RoutePoint;
 import org.leo.traceroute.install.Env;
 import org.leo.traceroute.install.Env.OS;
 import org.leo.traceroute.models.PacketPassage;
-import org.leo.traceroute.models.Position;
 import org.leo.traceroute.models.Traceroute;
 import org.leo.traceroute.ui.control.ControlPanel.TraceRouteControl;
 import org.leo.traceroute.ui.route.RouteTablePanel.Column;
@@ -553,18 +551,13 @@ public abstract class AbstractTraceRoute<T> extends AbstractObject<IRouteListene
 		// Save point in API
 		if (_traceroute != null) {
 			try {
-				Position position = null;
-				// Case when the IP's localization is known
-				if (!point.getTown().equals(GeoService.UNKNOWN_LOCATION) && !point.getTown().equals(GeoPoint.UNKNOWN)) {
-					position = new Position(point.getLon(), point.getLat(), point.getCountry(), point.getTown());
-				}
 				// If the IP is unknown, we do not send it to the API
 				if (!point.getIp().equals(GeoPoint.UNKNOWN)) {
 					final HttpClient _client = new DefaultHttpClient();
 					final HttpPost request = new HttpPost(Env.INSTANCE.getApiUrl() + "/packet_passages");
 					request.setHeader("Accept", "application/json");
 					request.setHeader("Content-type", "application/json");
-					final PacketPassage packetPassage = new PacketPassage(_route.size(), point.getIp(), _traceroute.getId(), point.getHostname(), position);
+					final PacketPassage packetPassage = new PacketPassage(_route.size(), point.getIp(), _traceroute.getId(), point.getHostname());
 					final ObjectMapper mapper = new ObjectMapper();
 					request.setEntity(new StringEntity(mapper.writeValueAsString(packetPassage)));
 					_client.execute(request);
