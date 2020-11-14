@@ -10,6 +10,10 @@ This application is meant to be used with this API : https://github.com/Zigotote
 All you need is downloading the source code and running it from your favorite IDE.
 ! Be carefull to launch the API and check the api.url property is correct in src/org/leo/traceroute/resources/static.properties before starting the Java application
 
+# Jpcap.dll
+
+Sometimes, the application fires an error "Jpcap.dll : Can't find depend library". In that case, you need to download this library : https://www.winpcap.org/install/default.htm?fbclid=IwAR3cRmih4UXFYxj-Lv-pVHmfE-L56Fc64iHcL2JpTZDrSlU5rYYxzNvBrq8 (as said in that thread https://sourceforge.net/p/openvisualtrace/discussion/1799339/thread/3a28b649/)
+
 # Description
 
 At the beggining, the application gets the shared IP saved in the capitrain-api (cf org.leo.traceroute.Main.java).
