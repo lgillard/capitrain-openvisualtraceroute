@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author Oceane
  */
 //https://www.baeldung.com/jackson-ignore-properties-on-serialization
-@JsonIgnoreProperties(value = { "packetPassages", "position" })
+@JsonIgnoreProperties(value = { "packetPassages", "position", "isp" })
 public class IpAdress {
 	/**
 	 * Id in database
