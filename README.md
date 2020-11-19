@@ -3,7 +3,7 @@ This project is a fork from here : https://github.com/c4pt000/openvisualtracerou
 # Overview
 
 This application is meant to be used with this API : https://github.com/Zigotote/capitrain-api.
-! You need to download and launch the API before running openvisualtraceroute.
+! You need to download and launch the API, whithout the API UI mode, before running openvisualtraceroute.
 
 # Launch
 
